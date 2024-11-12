@@ -17,7 +17,7 @@ jobs:
       env:
         DOCKER_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
-      run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin "${{ secrets.ARTIFACTORY_URL }}/${{ secrets.ARTIFACTORY_REPO }}"
+      run: echo "${DOCKER_PASSWORD}" | docker login localhost:8046
 
     - name: Build Docker Image
       run: docker build -t ${{ secrets.ARTIFACTORY_URL }}/${{ secrets.ARTIFACTORY_REPO }}/your-image-name:latest .
