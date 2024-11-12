@@ -1,0 +1,30 @@
+name: Build and Push Docker Image to Artifactory
+
+on:
+  push:
+    branches:
+      - main  # Adjust the branch to trigger the workflow on push
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Log in to Docker
+      env:
+        DOCKER_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+      run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin "${{ secrets.ARTIFACTORY_URL }}/${{ secrets.ARTIFACTORY_REPO }}"
+
+    - name: Build Docker Image
+      run: docker build -t ${{ secrets.ARTIFACTORY_URL }}/${{ secrets.ARTIFACTORY_REPO }}/your-image-name:latest .
+
+    - name: Push Docker Image
+      run: docker push ${{ secrets.ARTIFACTORY_URL }}/${{ secrets.ARTIFACTORY_REPO }}/your-image-name:latest
+
+    - name: Log out from Docker
+      run: docker logout
+
